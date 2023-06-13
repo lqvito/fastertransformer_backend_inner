@@ -33,6 +33,11 @@ class TritonPythonModel:
         # Parse model configs
         self.model_config = model_config = json.loads(args['model_config'])
 
+        model_checkpoint_path = "decapoda-research/llama-7b-hf"
+        if "parameters" in model_config:
+            if "model_checkpoint_path" in model_config["parameters"]:
+                model_checkpoint_path = model_config["parameters"]["model_checkpoint_path"]["string_value"]
+
         # Parse model output configs
         output_config = pb_utils.get_output_config_by_name(
             model_config, "OUTPUT")
@@ -42,8 +47,7 @@ class TritonPythonModel:
             output_config['data_type'])
 
         from transformers import LlamaTokenizer
-        self.tokenizer = LlamaTokenizer.from_pretrained('/data/llama-7b-hf')
-        # self.tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+        self.tokenizer = LlamaTokenizer.from_pretrained(model_checkpoint_path)
 
     def execute(self, requests):
         """`execute` must be implemented in every Python model. `execute`

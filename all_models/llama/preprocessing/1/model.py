@@ -63,6 +63,10 @@ class TritonPythonModel:
         """
         # Parse model configs
         self.model_config = model_config = json.loads(args['model_config'])
+        model_checkpoint_path = "decapoda-research/llama-7b-hf"
+        if "parameters" in model_config:
+            if "model_checkpoint_path" in model_config["parameters"]:
+                model_checkpoint_path = model_config["parameters"]["model_checkpoint_path"]["string_value"]
 
         # Parse model output configs and convert Triton types to numpy types
         input_names = ["INPUT_ID", "REQUEST_INPUT_LEN", "BAD_WORDS_IDS", "STOP_WORDS_IDS"]
@@ -76,8 +80,7 @@ class TritonPythonModel:
         cur_folder = Path(__file__).parent
 
         from transformers import LlamaTokenizer
-        self.tokenizer = LlamaTokenizer.from_pretrained('/data/llama-7b-hf')
-        # self.tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
+        self.tokenizer = LlamaTokenizer.from_pretrained(model_checkpoint_path)
         self.start_id = self.tokenizer.eos_token_id
         self.end_id = self.tokenizer.bos_token_id
         print(f"start id: {self.start_id} end id: {self.end_id}")

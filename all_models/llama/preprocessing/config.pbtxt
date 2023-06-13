@@ -64,3 +64,10 @@ instance_group [
         kind: KIND_CPU
     }
 ]
+
+parameters {
+  key: "model_checkpoint_path"
+  value: {
+    string_value: "/workspace/ft/models/ft/llama/1-gpu/"
+  }
+}
